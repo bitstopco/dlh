@@ -38,6 +38,12 @@ RSpec.describe Dlh::Parser do
     end
   end
 
+  describe "address" do
+    it "return correct full address" do
+      expect(parse.address("full")).to eq("520 NW 130TH ST, Miami, FL, 33168")
+    end
+  end
+
   # it "does something useful" do
   #   expect(false).to eq(true)
   # end
