@@ -4,14 +4,14 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'dlh/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "dlh"
+  spec.name          = "DLH"
   spec.version       = Dlh::VERSION
   spec.authors       = ["Dainel Vera"]
   spec.email         = ["dan@bitstop.co"]
 
-  spec.summary       = %q{A simple set of tools to work with drivers license pdf417 data.}
+  spec.summary       = %q{A set of tools for driver license data.}
   spec.description   = %q{A simple set of tools to work with drivers license pdf417 data.}
-  spec.homepage      = "TODO: Put your gem's website or public repo URL here."
+  spec.homepage      = "https://github.com/bitstopco/dlh"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
