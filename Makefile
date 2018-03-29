@@ -4,3 +4,6 @@ build:
 
 install:
 	gem install ./*.gem
+
+irb:
+	irb -r ./lib/dlh.rb
