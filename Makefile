@@ -6,4 +6,7 @@ install:
 	gem install ./*.gem
 
 irb:
-	irb -r ./lib/dlh.rb
+	./bin/console
+
+test:
+	rake spec

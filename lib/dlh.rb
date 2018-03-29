@@ -1,3 +1,3 @@
 Dir[File.join(__dir__, 'dlh', '*.rb')].each do |file|
-   require file
+  require file
 end

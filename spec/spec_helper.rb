@@ -1,11 +1,11 @@
 require "bundler/setup"
+require "pry"
 require "dlh"
 
 RSpec.configure do |config|
-  # Enable flags like --only-failures and --next-failure
-  config.example_status_persistence_file_path = ".rspec_status"
+  
+end
 
-  config.expect_with :rspec do |c|
-    c.syntax = :expect
-  end
+class Helper
+  VALID_DRIVERS_LICENSE = "ANSI 6360100102DL00390171ZF02100065DL\nDAABAPTISTE,JEAN,EMMANUEL\nDAG520 NW 130TH ST\nDAIMIAMI\nDAJFL\nDAK33168-0000 \nDAQB132465932240DARE   DASNONEDATNONE\nDBA20220624\nDBB19930624\nDBC1\nDBD20140303DBHN\nDAU506ZFZFAREPLACED: 20170817ZFBZFCS111708170486ZFDZFE06-01-14ZFF"
 end
