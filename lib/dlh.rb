@@ -1,3 +1,5 @@
-Dir[File.join(__dir__, 'dlh', '*.rb')].each do |file|
+require "fullname/parser"
+
+Dir[File.join(__dir__, "dlh", "*.rb")].each do |file|
   require file
 end

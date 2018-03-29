@@ -20,6 +20,24 @@ RSpec.describe Dlh::Parser do
     end
   end
 
+  describe "name" do
+    it "return correct full name" do
+      expect(parse.name("full")).to eq("Jean Emmanuel Baptiste")
+    end
+
+    it "return correct first name" do
+      expect(parse.name("first")).to eq("Jean")
+    end
+
+    it "return correct last name" do
+      expect(parse.name("last")).to eq("Baptiste")
+    end
+
+    it "return correct middle name" do
+      expect(parse.name("middle")).to eq("Emmanuel")
+    end
+  end
+
   # it "does something useful" do
   #   expect(false).to eq(true)
   # end
