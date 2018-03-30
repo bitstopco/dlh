@@ -44,6 +44,24 @@ RSpec.describe Dlh::Parser do
     end
   end
 
+  describe "gender" do
+    it "return correct gender" do
+      expect(parse.gender).to eq("Male")
+    end
+  end
+
+  describe "dob" do
+    it "return correct date of birth" do
+      expect(parse.dob).to eq("19930624")
+    end
+  end
+
+  describe "issue_date" do
+    it "return correct issue date" do
+      expect(parse.issue_date).to eq("20140303DBHN")
+    end
+  end
+
   # it "does something useful" do
   #   expect(false).to eq(true)
   # end

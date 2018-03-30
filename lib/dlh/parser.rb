@@ -2,20 +2,20 @@ module Dlh
   class Parser
     def initialize(data)
       @data = data.gsub(/\n/, "").gsub(/\s/, " ")
-      parse_it
     end
 
-    def parse_it
+    def parsed
       case id_version
       when "01"
-        # Date of Birth
-        puts @data.match(/DBB.+(?=DBC)/).to_s.gsub("DBB", "") 
-        
-        # Driver Sex
-        puts @data.match(/DBC.+(?=DBD)/).to_s.gsub("DBC", "")     
-
-        # Driver License or ID Document Issue Date
-        puts @data.match(/DBD.+(?=DAU)/).to_s.gsub("DBD", "")                
+        return {
+          id_version: id_version,
+          id_number: id_number,
+          name: name,
+          dob: dob,
+          gender: gender,
+          address: address,
+          issue_date: issue_date
+        }
       end
     end
 
@@ -66,6 +66,21 @@ module Dlh
         state: state,
         zipcode: zipcode
       }
+    end
+
+    def gender
+      # Driver Sex
+      return Helper.genders(@data.match(/DBC.+(?=DBD)/)[0].gsub("DBC", ""))
+    end
+
+    def dob
+      # Date of Birth
+      return @data.match(/DBB.+(?=DBC)/)[0].gsub("DBB", "")
+    end
+
+    def issue_date
+      # Driver License or ID Document Issue Date
+      return @data.match(/DBD.+(?=DAU)/)[0].gsub("DBD", "")
     end
   end
 end
