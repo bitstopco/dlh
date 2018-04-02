@@ -28,6 +28,11 @@ module Dlh
       return @data.match(/DAQ.+(?=DAR)/).to_s.gsub("DAQ", "").downcase
     end
 
+    def class_code
+      # Driver License Classification Code
+      return @data.match(/DAR(\w*)/)[1]
+    end
+
     def name(format=nil)
       # Driver License Name
       nm = @data.match(/DAA.+(?=DAG)/)[0].gsub("DAA", "").gsub(/\s+/, "").split(",")
