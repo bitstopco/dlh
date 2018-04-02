@@ -62,6 +62,22 @@ RSpec.describe Dlh::Parser do
     it "return correct full address" do
       expect(parse.address("full")).to eq("520 NW 130TH ST, Miami, FL, 33168")
     end
+
+    it "return correct address" do
+      expect(parse.address[:address]).to eq("520 NW 130TH ST")
+    end
+
+    it "return correct city" do
+      expect(parse.address[:city]).to eq("Miami")
+    end
+
+    it "return correct state" do
+      expect(parse.address[:state]).to eq("FL")
+    end
+
+    it "return correct zipcode" do
+      expect(parse.address[:zipcode]).to eq("33168")
+    end
   end
 
   describe "gender" do
