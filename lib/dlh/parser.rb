@@ -5,16 +5,22 @@ module Dlh
     end
 
     def parsed
+      # get version of aamva (before 2000 or after)
       case id_version
+      # version 01 year 2000
       when "01"
         return {
           id_version: id_version,
           id_number: id_number,
+          class_code: class_code,
+          endorsement_code: endorsement_code,
+          restriction_code: restriction_code,
           name: name,
           dob: dob,
           gender: gender,
           address: address,
-          issue_date: issue_date
+          issue_date: issue_date,
+          expiration_date: expiration_date
         }
       end
     end
@@ -31,6 +37,16 @@ module Dlh
     def class_code
       # Driver License Classification Code
       return @data.match(/DAR(\w*)/)[1]
+    end
+
+    def endorsement_code
+      # Driver License Endorsements Code
+      return @data.match(/DAT.+(?=DBA)/)[0].gsub("DAT", "")
+    end
+
+    def restriction_code
+      # Driver License Restriction Code
+      return @data.match(/DAS.+(?=DAT)/)[0].gsub("DAS", "")
     end
 
     def name(format=nil)
@@ -78,6 +94,11 @@ module Dlh
       return Helper.genders(@data.match(/DBC.+(?=DBD)/)[0].gsub("DBC", ""))
     end
 
+    def height
+      # Height (FT/IN)
+      return @data.match(/DAU(\d*)/)[1]
+    end
+
     def dob
       # Date of Birth
       return @data.match(/DBB.+(?=DBC)/)[0].gsub("DBB", "")
@@ -86,6 +107,11 @@ module Dlh
     def issue_date
       # Driver License or ID Document Issue Date
       return @data.match(/DBD.+(?=DAU)/)[0].gsub("DBD", "")
+    end
+
+    def expiration_date
+      # Driver License Expiration Date
+      return @data.match(/DBA.+(?=DBB)/)[0].gsub("DBA", "")
     end
   end
 end

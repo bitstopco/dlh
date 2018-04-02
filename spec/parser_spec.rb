@@ -14,9 +14,29 @@ RSpec.describe Dlh::Parser do
     end
   end
 
+  describe "codes" do
+    it "return correct class_code" do
+      expect(parse.class_code).to eq("E")
+    end
+
+    it "return correct endorsement_code" do
+      expect(parse.endorsement_code).to eq("NONE")
+    end
+
+    it "return correct restriction_code" do
+      expect(parse.restriction_code).to eq("NONE")
+    end
+  end  
+
   describe "id_number" do
     it "return correct id_number" do
       expect(parse.id_number).to eq("b132465932240")
+    end
+  end
+
+  describe "height" do
+    it "return correct height" do
+      expect(parse.height).to eq("506")
     end
   end
 
@@ -50,15 +70,17 @@ RSpec.describe Dlh::Parser do
     end
   end
 
-  describe "dob" do
+  describe "dates" do
     it "return correct date of birth" do
       expect(parse.dob).to eq("19930624")
     end
-  end
 
-  describe "issue_date" do
     it "return correct issue date" do
       expect(parse.issue_date).to eq("20140303DBHN")
+    end
+
+    it "return correct expiration date" do
+      expect(parse.expiration_date).to eq("20220624")
     end
   end
 
