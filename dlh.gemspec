@@ -4,7 +4,7 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'dlh/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = "DLH"
+  spec.name          = "dlh"
   spec.version       = Dlh::VERSION
   spec.authors       = ["Dainel Vera"]
   spec.email         = ["dan@bitstop.co"]
