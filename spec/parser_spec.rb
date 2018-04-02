@@ -88,15 +88,15 @@ RSpec.describe Dlh::Parser do
 
   describe "dates" do
     it "return correct date of birth" do
-      expect(parse.dob).to eq("19930624")
+      expect(parse.dob).to eq("06-24-1993")
     end
 
     it "return correct issue date" do
-      expect(parse.issue_date).to eq("20140303DBHN")
+      expect(parse.issue_date).to eq("03-03-2014")
     end
 
     it "return correct expiration date" do
-      expect(parse.expiration_date).to eq("20220624")
+      expect(parse.expiration_date).to eq("06-24-2022")
     end
   end
 

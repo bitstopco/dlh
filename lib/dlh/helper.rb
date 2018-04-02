@@ -4,6 +4,10 @@ module Dlh
       return content.split(" ").map{|word| word.capitalize}.join(" ")
     end
 
+    def self.format_date(date)
+      return [date[4..5], date[6..8], date[0..3]].join("-")
+    end
+
     def self.genders(int)
       genders = {
         0 => 'Unknown',

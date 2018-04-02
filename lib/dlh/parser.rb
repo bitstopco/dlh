@@ -101,17 +101,17 @@ module Dlh
 
     def dob
       # Date of Birth
-      return @data.match(/DBB.+(?=DBC)/)[0].gsub("DBB", "")
+      return Helper.format_date(@data.match(/DBB.+(?=DBC)/)[0].gsub("DBB", ""))
     end
 
     def issue_date
       # Driver License or ID Document Issue Date
-      return @data.match(/DBD.+(?=DAU)/)[0].gsub("DBD", "")
+      return Helper.format_date(@data.match(/DBD(\d*)/)[1])
     end
 
     def expiration_date
       # Driver License Expiration Date
-      return @data.match(/DBA.+(?=DBB)/)[0].gsub("DBA", "")
+      return Helper.format_date(@data.match(/DBA.+(?=DBB)/)[0].gsub("DBA", ""))
     end
   end
 end
