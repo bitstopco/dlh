@@ -4,8 +4,9 @@ module Dlh
       return content.split(" ").map{|word| word.capitalize}.join(" ")
     end
 
-    def self.format_date(date)
-      return [date[4..5], date[6..8], date[0..3]].join("-")
+    def self.format_date(date, version)
+      return [date[4..5], date[6..8], date[0..3]].join("-") if version == "01"
+      return [date[0..1], date[2..3], date[4..7]].join("-") if version == "04"
     end
 
     def self.genders(int)

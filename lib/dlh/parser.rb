@@ -2,6 +2,7 @@ module Dlh
   class Parser
     def initialize(data)
       @data = data.gsub(/\n/, "").gsub(/\s/, " ")
+      @id_version = id_version
     end
 
     def parsed
@@ -22,6 +23,18 @@ module Dlh
           issue_date: issue_date,
           expiration_date: expiration_date
         }
+      when "04"
+        return {
+          id_version: id_version,
+          id_number: id_number,
+          class_code: class_code,
+          name: name,
+          dob: dob,
+          gender: gender,
+          address: address,
+          issue_date: issue_date,
+          expiration_date: expiration_date
+        }
       end
     end
 
@@ -31,12 +44,13 @@ module Dlh
 
     def id_number
       # Drivers license number
-      return @data.match(/DAQ.+(?=DAR)/).to_s.gsub("DAQ", "").downcase
+      return @data.match(/DAQ.+(?=DAR)/).to_s.gsub("DAQ", "").downcase if @id_version == "01"
+      return @data.match(/DAQ.+(?=DCF)/).to_s.gsub("DAQ", "").downcase if @id_version == "04"
     end
 
     def class_code
       # Driver License Classification Code
-      return @data.match(/DAR(\w*)/)[1]
+      return @data.match(/DAR(\w)/)[1]
     end
 
     def endorsement_code
@@ -51,8 +65,13 @@ module Dlh
 
     def name(format=nil)
       # Driver License Name
-      nm = @data.match(/DAA.+(?=DAG)/)[0].gsub("DAA", "").gsub(/\s+/, "").split(",")
-      nm = Helper.titlelize(nm.insert(2, nm.delete_at(0)).join(" "))
+      if @id_version == "01"
+        nm = @data.match(/DAA.+(?=DAG)/)[0].gsub("DAA", "").gsub(/\s+/, "").split(",")
+        nm = Helper.titlelize(nm.insert(2, nm.delete_at(0)).join(" "))  
+      end
+      
+      nm = Helper.titlelize([@data.match(/DAC.+(?=DAD)/)[0].gsub("DAC", ""), @data.match(/DAD.+(?=DBD)/)[0].gsub("DAD", ""), @data.match(/DCS.+(?=DAC)/)[0].gsub("DCS", "")].join(" ")) if @id_version == "04"
+
       pnm = Fullname::Parser.parse_fullname(nm)
 
       case format
@@ -75,7 +94,7 @@ module Dlh
       address = full_address.match(/.+(?=DAI)/)[0]
       city = Helper.titlelize(full_address.match(/DAI.+(?=DAJ)/)[0].gsub("DAI", ""))
       state = full_address.match(/DAJ.+(?=DAK)/)[0].gsub("DAJ", "")
-      zipcode = full_address.match(/DAK(\d*)/)[1]
+      zipcode = full_address.match(/DAK(\d....)/)[1]
 
       case format
       when "full"
@@ -91,7 +110,7 @@ module Dlh
 
     def gender
       # Driver Sex
-      return Helper.genders(@data.match(/DBC.+(?=DBD)/)[0].gsub("DBC", ""))
+      return Helper.genders(@data.match(/DBC(\d)/)[0].gsub("DBC", ""))
     end
 
     def height
@@ -101,17 +120,17 @@ module Dlh
 
     def dob
       # Date of Birth
-      return Helper.format_date(@data.match(/DBB.+(?=DBC)/)[0].gsub("DBB", ""))
+      return Helper.format_date(@data.match(/DBB.+(?=DBC)/)[0].gsub("DBB", ""), @id_version)
     end
 
     def issue_date
       # Driver License or ID Document Issue Date
-      return Helper.format_date(@data.match(/DBD(\d*)/)[1])
+      return Helper.format_date(@data.match(/DBD(\d*)/)[1], @id_version)
     end
 
     def expiration_date
       # Driver License Expiration Date
-      return Helper.format_date(@data.match(/DBA.+(?=DBB)/)[0].gsub("DBA", ""))
+      return Helper.format_date(@data.match(/DBA.+(?=DBB)/)[0].gsub("DBA", ""), @id_version)
     end
   end
 end
