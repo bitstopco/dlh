@@ -35,6 +35,17 @@ module Dlh
           issue_date: issue_date,
           expiration_date: expiration_date
         }
+      when "08"
+        return {
+          id_version: id_version,
+          id_number: id_number,
+          name: name,
+          dob: dob,
+          gender: gender,
+          address: address,
+          issue_date: issue_date,
+          expiration_date: expiration_date
+        }
       when "09"
         return {
           id_version: id_version,
@@ -56,9 +67,14 @@ module Dlh
 
     def id_number
       # Drivers license number
-      return @data.match(/DAQ.+(?=DAR)/).to_s.gsub("DAQ", "").downcase if @id_version == "01"
-      return @data.match(/DAQ.+(?=DCF)/).to_s.gsub("DAQ", "").downcase if @id_version == "04"
-      return @data.match(/DAQ.+(?=DCS)/).to_s.gsub("DAQ", "").downcase if @id_version == "09"
+      case @id_version
+      when "01"
+        return @data.match(/DAQ.+(?=DAR)/).to_s.gsub("DAQ", "").downcase
+      when "04"
+        return @data.match(/DAQ.+(?=DCF)/).to_s.gsub("DAQ", "").downcase
+      when "08", "09"
+        return @data.match(/DAQ.+(?=DCS)/).to_s.gsub("DAQ", "").downcase
+      end
     end
 
     def class_code
@@ -87,7 +103,7 @@ module Dlh
         nm = Helper.titlelize([@data.match(/DAC.+(?=DAD)/)[0].gsub("DAC", ""), @data.match(/DAD.+(?=DBD)/)[0].gsub("DAD", ""), @data.match(/DCS.+(?=DAC)/)[0].gsub("DCS", "")].join(" "))
       end
 
-      if @id_version == "09"
+      if @id_version == "09" || @id_version == "08"
         nm = Helper.titlelize([@data.match(/DAC.+(?=DDF)/)[0].gsub("DAC", ""), @data.match(/DAD.+(?=DDG)/)[0].gsub("DAD", ""), @data.match(/DCS.+(?=DDE)/)[0].gsub("DCS", "")].join(" "))
       end
 
@@ -110,7 +126,10 @@ module Dlh
     def address(format=nil)
       # Driver Mailing Street Address
       full_address = @data.match(/DAG.+(?=DAQ)/).to_s.gsub("DAG", "")
-      full_address = @data.match(/DAG.+(?=DCF)/).to_s.gsub("DAG", "") if @id_version == "09"
+      if @id_version == "09" || @id_version == "08"
+        full_address = @data.match(/DAG.+(?=DCF)/).to_s.gsub("DAG", "")
+      end
+
       address = full_address.match(/.+(?=DAI)/)[0]
       city = Helper.titlelize(full_address.match(/DAI.+(?=DAJ)/)[0].gsub("DAI", ""))
       state = full_address.match(/DAJ.+(?=DAK)/)[0].gsub("DAJ", "")
@@ -140,8 +159,7 @@ module Dlh
 
     def dob
       # Date of Birth
-      return Helper.format_date(@data.match(/DBB.+(?=DBA)/)[0].gsub("DBB", ""), @id_version) if @id_version == "09"
-      return Helper.format_date(@data.match(/DBB.+(?=DBC)/)[0].gsub("DBB", ""), @id_version)
+      return Helper.format_date(@data.match(/DBB(\d*)/)[1], @id_version)
     end
 
     def issue_date
@@ -151,8 +169,7 @@ module Dlh
 
     def expiration_date
       # Driver License Expiration Date
-      return Helper.format_date(@data.match(/DBA.+(?=DBC)/)[0].gsub("DBA", ""), @id_version) if @id_version == "09"
-      return Helper.format_date(@data.match(/DBA.+(?=DBB)/)[0].gsub("DBA", ""), @id_version)
+      return Helper.format_date(@data.match(/DBA(\d*)/)[1], @id_version)
     end
   end
 end

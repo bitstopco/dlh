@@ -8,7 +8,7 @@ module Dlh
       case version
       when "01"
         return [date[4..5], date[6..8], date[0..3]].join("-")
-      when "04", "09"
+      when "04", "09", "08"
         return [date[0..1], date[2..3], date[4..7]].join("-")      
       end
     end
