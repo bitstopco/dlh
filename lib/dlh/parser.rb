@@ -55,7 +55,7 @@ module Dlh
       case @version
       when "01"
         return @data.match(/DAQ.+(?=DAR)/).to_s.gsub("DAQ", "").downcase
-      when "04"
+      when "03", "04"
         return @data.match(/DAQ.+(?=DCF)/).to_s.gsub("DAQ", "").downcase
       when "08", "09"
         return @data.match(/DAQ.+(?=DCS)/).to_s.gsub("DAQ", "").downcase
@@ -82,7 +82,9 @@ module Dlh
       case @version
       when "01"
         nm = @data.match(/DAA.+(?=DAG)/)[0].gsub("DAA", "").gsub(/\s+/, "").split(",")
-        nm = Helper.titlelize(nm.insert(2, nm.delete_at(0)).join(" "))  
+        nm = Helper.titlelize(nm.insert(2, nm.delete_at(0)).join(" "))
+      when "03"
+        nm = Helper.titlelize([@data.match(/DCT.+(?=DBD)/)[0].gsub("DCT", ""), @data.match(/DCS.+(?=DCT)/)[0].gsub("DCS", "")].join(" "))
       when "04"
         nm = Helper.titlelize([@data.match(/DAC.+(?=DAD)/)[0].gsub("DAC", ""), @data.match(/DAD.+(?=DBD)/)[0].gsub("DAD", ""), @data.match(/DCS.+(?=DAC)/)[0].gsub("DCS", "")].join(" "))
       when "08", "09"
@@ -114,9 +116,9 @@ module Dlh
         full_address = @data.match(/DAG.+(?=DAQ)/).to_s.gsub("DAG", "")
       end
 
-      address = full_address.match(/.+(?=DAI)/)[0]
-      city = Helper.titlelize(full_address.match(/DAI.+(?=DAJ)/)[0].gsub("DAI", ""))
-      state = full_address.match(/DAJ.+(?=DAK)/)[0].gsub("DAJ", "")
+      address = full_address.match(/.+(?=DAI)/)[0].strip
+      city = Helper.titlelize(full_address.match(/DAI.+(?=DAJ)/)[0].gsub("DAI", "")).strip
+      state = full_address.match(/DAJ.+(?=DAK)/)[0].gsub("DAJ", "").strip
       zipcode = full_address.match(/DAK(\d....)/)[1]
 
       case format
