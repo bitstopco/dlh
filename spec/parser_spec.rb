@@ -2,6 +2,7 @@ require "spec_helper"
 
 RSpec.describe Dlh::Parser do
   parse_01 = Dlh::Parser.new(Helper::VALID_DRIVERS_LICENSE_01)
+  parse_02 = Dlh::Parser.new(Helper::VALID_DRIVERS_LICENSE_02)
   parse_03 = Dlh::Parser.new(Helper::VALID_DRIVERS_LICENSE_03)
   parse_04 = Dlh::Parser.new(Helper::VALID_DRIVERS_LICENSE_04)
   parse_06 = Dlh::Parser.new(Helper::VALID_DRIVERS_LICENSE_06)
@@ -96,6 +97,94 @@ RSpec.describe Dlh::Parser do
 
       it "return correct expiration date" do
         expect(parse_01.expiration_date).to eq("06-24-2022")
+      end
+    end
+  end
+
+  # ----------------------------------------------
+
+  describe "id_version 02" do
+    it "return correct id_version" do
+      expect(parse_02.id_version).to eq("02")
+    end
+
+    describe "codes" do
+      it "return correct class_code" do
+        expect(parse_02.class_code).to eq("D")
+      end
+
+      it "return correct endorsement_code" do
+        expect(parse_02.endorsement_code).to eq("*****")
+      end
+
+      it "return correct restriction_code" do
+        expect(parse_02.restriction_code).to eq("********")
+      end
+    end  
+
+    it "return correct id_number" do
+      expect(parse_02.id_number).to eq("b50068093246")
+    end
+
+    it "return correct height" do
+      expect(parse_02.height).to eq("511")
+    end
+
+    describe "name" do
+      it "return correct full name" do
+        expect(parse_02.name("full")).to eq("Paul Beene Jr")
+      end
+
+      it "return correct first name" do
+        expect(parse_02.name("first")).to eq("Paul")
+      end
+
+      it "return correct last name" do
+        expect(parse_02.name("last")).to eq("Beene")
+      end
+
+      it "return correct middle name" do
+        expect(parse_02.name("middle")).to eq(nil)
+      end
+    end
+
+    describe "address" do
+      it "return correct full address" do
+        expect(parse_02.address("full")).to eq("7309 S PAXTON, Chicago, IL, 60649")
+      end
+
+      it "return correct address" do
+        expect(parse_02.address[:address]).to eq("7309 S PAXTON")
+      end
+
+      it "return correct city" do
+        expect(parse_02.address[:city]).to eq("Chicago")
+      end
+
+      it "return correct state" do
+        expect(parse_02.address[:state]).to eq("IL")
+      end
+
+      it "return correct zipcode" do
+        expect(parse_02.address[:zipcode]).to eq("60649")
+      end
+    end
+
+    it "return correct gender" do
+      expect(parse_02.gender).to eq("M")
+    end
+
+    describe "dates" do
+      it "return correct date of birth" do
+        expect(parse_02.dob).to eq("08-29-1993")
+      end
+
+      it "return correct issue date" do
+        expect(parse_02.issue_date).to eq("03-25-2016")
+      end
+
+      it "return correct expiration date" do
+        expect(parse_02.expiration_date).to eq("08-29-2019")
       end
     end
   end

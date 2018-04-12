@@ -10,7 +10,7 @@ module Dlh
       # get version of aamva (before 2000 or after)
       case @version
       # version 01 year 2000
-      when "01"
+      when "01", "02"
         parsed_data[:id_version] = id_version
         parsed_data[:id_number] = id_number
         parsed_data[:class_code] = class_code
@@ -55,6 +55,8 @@ module Dlh
       case @version
       when "01"
         return @data.match(/DAQ.+(?=DAR)/).to_s.gsub("DAQ", "").downcase
+      when "02"
+        return @data.match(/DAQ.+(?=DBA)/).to_s.gsub("DAQ", "").downcase
       when "03", "04"
         return @data.match(/DAQ.+(?=DCF)/).to_s.gsub("DAQ", "").downcase
       when "06"
@@ -75,12 +77,17 @@ module Dlh
 
     def endorsement_code
       # Driver License Endorsements Code
-      return @data.match(/DAT.+(?=DBA)/)[0].gsub("DAT", "")
+      case @version
+      when "02"
+        return @data.match(/DAT.+(?=DBD)/)[0].gsub("DAT", "")
+      else
+        return @data.match(/DAT.+(?=DBA)/)[0].gsub("DAT", "")
+      end      
     end
 
     def restriction_code
       # Driver License Restriction Code
-      return @data.match(/DAS.+(?=DAT)/)[0].gsub("DAS", "")
+      return @data.match(/DAS.+(?=DAT)/)[0].gsub("DAS", "").strip
     end
 
     def name(format=nil)
@@ -89,6 +96,9 @@ module Dlh
       when "01"
         nm = @data.match(/DAA.+(?=DAG)/)[0].gsub("DAA", "").gsub(/\s+/, "").split(",")
         nm = Helper.titlelize(nm.insert(2, nm.delete_at(0)).join(" "))
+      when "02"
+        nm = @data.match(/DAA.+(?=DAQ)/)[0].gsub("DAA", "").split(",")
+        nm = Helper.titlelize([nm.last, nm.first].join(" "))
       when "03"
         nm = Helper.titlelize([@data.match(/DCT.+(?=DBD)/)[0].gsub("DCT", ""), @data.match(/DCS.+(?=DCT)/)[0].gsub("DCS", "")].join(" "))
       when "04"
@@ -123,6 +133,8 @@ module Dlh
         if full_address.length == 0
           full_address = @data.match(/DAG.+(?=DCF)/).to_s.gsub("DAG", "")  
         end
+      when "02"
+        full_address = @data.match(/DAG.+(?=DAR)/).to_s.gsub("DAG", "")
       when "08", "09"
         full_address = @data.match(/DAG.+(?=DCF)/).to_s.gsub("DAG", "")
       else
@@ -148,7 +160,12 @@ module Dlh
 
     def gender
       # Driver Sex
-      return Helper.genders(@data.match(/DBC(\d{1})/)[1])
+      case @version
+      when "02"
+        return @data.match(/DBC(\w{1})/)[1]
+      else
+        return Helper.genders(@data.match(/DBC(\d{1})/)[1])  
+      end
     end
 
     def height
