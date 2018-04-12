@@ -55,8 +55,14 @@ module Dlh
       case @version
       when "01"
         return @data.match(/DAQ.+(?=DAR)/).to_s.gsub("DAQ", "").downcase
-      when "03", "04", "06"
+      when "03", "04"
         return @data.match(/DAQ.+(?=DCF)/).to_s.gsub("DAQ", "").downcase
+      when "06"
+        num = @data.match(/DAQ.+(?=DCS)/).to_s.gsub("DAQ", "").downcase
+        if num.length == 0
+          num = @data.match(/DAQ.+(?=DCF)/).to_s.gsub("DAQ", "").downcase
+        end
+        return num        
       when "08", "09"
         return @data.match(/DAQ.+(?=DCS)/).to_s.gsub("DAQ", "").downcase
       end
@@ -112,6 +118,11 @@ module Dlh
     def address(format=nil)
       # Driver Mailing Street Address
       case @version
+      when "06"
+        full_address = @data.match(/DAG.+(?=DAQ)/).to_s.gsub("DAG", "")
+        if full_address.length == 0
+          full_address = @data.match(/DAG.+(?=DCF)/).to_s.gsub("DAG", "")  
+        end
       when "08", "09"
         full_address = @data.match(/DAG.+(?=DCF)/).to_s.gsub("DAG", "")
       else
