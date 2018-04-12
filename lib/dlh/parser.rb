@@ -55,7 +55,7 @@ module Dlh
       case @version
       when "01"
         return @data.match(/DAQ.+(?=DAR)/).to_s.gsub("DAQ", "").downcase
-      when "03", "04"
+      when "03", "04", "06"
         return @data.match(/DAQ.+(?=DCF)/).to_s.gsub("DAQ", "").downcase
       when "08", "09"
         return @data.match(/DAQ.+(?=DCS)/).to_s.gsub("DAQ", "").downcase
@@ -87,7 +87,9 @@ module Dlh
         nm = Helper.titlelize([@data.match(/DCT.+(?=DBD)/)[0].gsub("DCT", ""), @data.match(/DCS.+(?=DCT)/)[0].gsub("DCS", "")].join(" "))
       when "04"
         nm = Helper.titlelize([@data.match(/DAC.+(?=DAD)/)[0].gsub("DAC", ""), @data.match(/DAD.+(?=DBD)/)[0].gsub("DAD", ""), @data.match(/DCS.+(?=DAC)/)[0].gsub("DCS", "")].join(" "))
-      when "08", "09"
+      # when "06"
+        # nm = Helper.titlelize([@data.match(/DAC.+(?=DAD)/)[0].gsub("DAC", ""), @data.match(/DAD.+(?=DBD)/)[0].gsub("DAD", ""), @data.match(/DCS.+(?=DAC)/)[0].gsub("DCS", "")].join(" "))
+      when "06", "08", "09"
         nm = Helper.titlelize([@data.match(/DAC.+(?=DDF)/)[0].gsub("DAC", ""), @data.match(/DAD.+(?=DDG)/)[0].gsub("DAD", ""), @data.match(/DCS.+(?=DDE)/)[0].gsub("DCS", "")].join(" "))
       end
 
