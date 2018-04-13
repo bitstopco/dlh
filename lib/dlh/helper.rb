@@ -6,7 +6,7 @@ module Dlh
 
     def self.format_date(date, version)
       case version
-      when "01", "02"
+      when "01", "01_v2", "02"
         return [date[4..5], date[6..8], date[0..3]].join("-")
       else
         return [date[0..1], date[2..3], date[4..7]].join("-")      

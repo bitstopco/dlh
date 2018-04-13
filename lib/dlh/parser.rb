@@ -7,41 +7,12 @@ module Dlh
 
     def parsed
       parsed_data = {}
-      # get version of aamva (before 2000 or after)
-      case @version
-      # version 01 year 2000
-      when "01", "02"
-        parsed_data[:id_version] = id_version
-        parsed_data[:id_number] = id_number
-        parsed_data[:class_code] = class_code
-        parsed_data[:endorsement_code] = endorsement_code
-        parsed_data[:restriction_code] = restriction_code
-        parsed_data[:name] = name
-        parsed_data[:dob] = dob
-        parsed_data[:gender] = gender
-        parsed_data[:address] = address
-        parsed_data[:issue_date] = issue_date
-        parsed_data[:expiration_date] = expiration_date
-      when "04", "09"
-        parsed_data[:id_version] = id_version
-        parsed_data[:id_number] = id_number
-        parsed_data[:class_code] = class_code
-        parsed_data[:name] = name
-        parsed_data[:dob] = dob
-        parsed_data[:gender] = gender
-        parsed_data[:address] = address
-        parsed_data[:issue_date] = issue_date
-        parsed_data[:expiration_date] = expiration_date
-      when "08"
-        parsed_data[:id_version] = id_version
-        parsed_data[:id_number] = id_number
-        parsed_data[:name] = name
-        parsed_data[:dob] = dob
-        parsed_data[:gender] = gender
-        parsed_data[:address] = address
-        parsed_data[:issue_date] = issue_date
-        parsed_data[:expiration_date] = expiration_date
-      end
+      parsed_data[:id_version] = id_version
+      parsed_data[:id_number] = id_number
+      parsed_data[:name] = name
+      parsed_data[:dob] = dob
+      parsed_data[:gender] = gender
+      parsed_data[:address] = address
 
       return parsed_data
     end
@@ -54,20 +25,24 @@ module Dlh
       # Drivers license number
       case @version
       when "01"
-        return @data.match(/DAQ.+(?=DAR)/).to_s.gsub("DAQ", "").downcase
-      when "02"
-        return @data.match(/DAQ.+(?=DBA)/).to_s.gsub("DAQ", "").downcase
-      when "03", "04"
-        return @data.match(/DAQ.+(?=DCF)/).to_s.gsub("DAQ", "").downcase
-      when "06"
-        num = @data.match(/DAQ.+(?=DCS)/).to_s.gsub("DAQ", "").downcase
-        if num.length == 0
-          num = @data.match(/DAQ.+(?=DCF)/).to_s.gsub("DAQ", "").downcase
+        id = @data.match(/DAQ.+(?=DAR)/).to_s.gsub("DAQ", "").downcase
+        if id.include? ","
+          id = @data.match(/DAQ.+(?=DAA)/).to_s.gsub("DAQ", "").downcase
+          @version = "01_v2"
         end
-        return num        
+      when "02"
+        id = @data.match(/DAQ.+(?=DBA)/).to_s.gsub("DAQ", "").downcase
+      when "03", "04"
+        id = @data.match(/DAQ.+(?=DCF)/).to_s.gsub("DAQ", "").downcase
+      when "06"
+        id = @data.match(/DAQ.+(?=DCS)/).to_s.gsub("DAQ", "").downcase
+        if id.length == 0
+          id = @data.match(/DAQ.+(?=DCF)/).to_s.gsub("DAQ", "").downcase
+        end
       when "08", "09"
-        return @data.match(/DAQ.+(?=DCS)/).to_s.gsub("DAQ", "").downcase
+        id = @data.match(/DAQ.+(?=DCS)/).to_s.gsub("DAQ", "").downcase
       end
+      return id.strip
     end
 
     def class_code
@@ -78,11 +53,14 @@ module Dlh
     def endorsement_code
       # Driver License Endorsements Code
       case @version
+      when "01_v2"
+        code = @data.match(/DAT.+(?=DAU)/)[0].gsub("DAT", "")
       when "02"
-        return @data.match(/DAT.+(?=DBD)/)[0].gsub("DAT", "")
+        code = @data.match(/DAT.+(?=DBD)/)[0].gsub("DAT", "")      
       else
-        return @data.match(/DAT.+(?=DBA)/)[0].gsub("DAT", "")
-      end      
+        code = @data.match(/DAT.+(?=DBA)/)[0].gsub("DAT", "")
+      end
+      return code  
     end
 
     def restriction_code
@@ -96,6 +74,10 @@ module Dlh
       when "01"
         nm = @data.match(/DAA.+(?=DAG)/)[0].gsub("DAA", "").gsub(/\s+/, "").split(",")
         nm = Helper.titlelize(nm.insert(2, nm.delete_at(0)).join(" "))
+      when "01_v2"
+        nm = @data.match(/DAA.+(?=DAG)/)[0].gsub("DAA", "").split(",")
+        puts nm
+        nm = Helper.titlelize([nm.last, nm.first].join(" "))
       when "02"
         nm = @data.match(/DAA.+(?=DAQ)/)[0].gsub("DAA", "").split(",")
         nm = Helper.titlelize([nm.last, nm.first].join(" "))
@@ -133,7 +115,7 @@ module Dlh
         if full_address.length == 0
           full_address = @data.match(/DAG.+(?=DCF)/).to_s.gsub("DAG", "")  
         end
-      when "02"
+      when "02", "01_v2"
         full_address = @data.match(/DAG.+(?=DAR)/).to_s.gsub("DAG", "")
       when "08", "09"
         full_address = @data.match(/DAG.+(?=DCF)/).to_s.gsub("DAG", "")
