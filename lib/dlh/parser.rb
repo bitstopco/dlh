@@ -32,7 +32,7 @@ module Dlh
         end
       when "02"
         id = @data.match(/DAQ.+(?=DBA)/).to_s.gsub("DAQ", "").downcase
-      when "03", "04"
+      when "03", "04", "05"
         id = @data.match(/DAQ.+(?=DCF)/).to_s.gsub("DAQ", "").downcase
       when "06"
         id = @data.match(/DAQ.+(?=DCS)/).to_s.gsub("DAQ", "").downcase
@@ -76,7 +76,6 @@ module Dlh
         nm = Helper.titlelize(nm.insert(2, nm.delete_at(0)).join(" "))
       when "01_v2"
         nm = @data.match(/DAA.+(?=DAG)/)[0].gsub("DAA", "").split(",")
-        puts nm
         nm = Helper.titlelize([nm.last, nm.first].join(" "))
       when "02"
         nm = @data.match(/DAA.+(?=DAQ)/)[0].gsub("DAA", "").split(",")
@@ -85,8 +84,8 @@ module Dlh
         nm = Helper.titlelize([@data.match(/DCT.+(?=DBD)/)[0].gsub("DCT", ""), @data.match(/DCS.+(?=DCT)/)[0].gsub("DCS", "")].join(" "))
       when "04"
         nm = Helper.titlelize([@data.match(/DAC.+(?=DAD)/)[0].gsub("DAC", ""), @data.match(/DAD.+(?=DBD)/)[0].gsub("DAD", ""), @data.match(/DCS.+(?=DAC)/)[0].gsub("DCS", "")].join(" "))
-      # when "06"
-        # nm = Helper.titlelize([@data.match(/DAC.+(?=DAD)/)[0].gsub("DAC", ""), @data.match(/DAD.+(?=DBD)/)[0].gsub("DAD", ""), @data.match(/DCS.+(?=DAC)/)[0].gsub("DCS", "")].join(" "))
+      when "05"
+        nm = Helper.titlelize([@data.match(/DAC.+(?=DAD)/)[0].gsub("DAC", ""), @data.match(/DCS.+(?=DAC)/)[0].gsub("DCS", "")].join(" "))
       when "06", "08", "09"
         nm = Helper.titlelize([@data.match(/DAC.+(?=DDF)/)[0].gsub("DAC", ""), @data.match(/DAD.+(?=DDG)/)[0].gsub("DAD", ""), @data.match(/DCS.+(?=DDE)/)[0].gsub("DCS", "")].join(" "))
       end
