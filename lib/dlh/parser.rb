@@ -141,12 +141,7 @@ module Dlh
 
     def gender
       # Driver Sex
-      case @version
-      when "02"
-        return @data.match(/DBC(\w{1})/)[1]
-      else
-        return Helper.genders(@data.match(/DBC(\d{1})/)[1])  
-      end
+      return Helper.genders(@data.match(/DBC(\w{1})/)[1])
     end
 
     def height

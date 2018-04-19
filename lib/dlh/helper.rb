@@ -15,13 +15,15 @@ module Dlh
 
     def self.genders(int)
       genders = {
-        0 => 'Unknown',
-        1 => 'Male',
-        2 => 'Female',
-        9 => 'Not Specified',
+        "0" => 'Unknown',
+        "1" => 'Male',
+        "2" => 'Female',
+        "9" => 'Not Specified',
+        "U" => 'Unknown',
+        "M" => 'Male',
+        "F" => 'Female'
       }
-
-      return genders[int.to_i]
+      return genders[int]
     end
 
     def self.weight(int)

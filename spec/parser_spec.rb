@@ -261,7 +261,7 @@ RSpec.describe Dlh::Parser do
     end
 
     it "return correct gender" do
-      expect(parse_02.gender).to eq("M")
+      expect(parse_02.gender).to eq("Male")
     end
 
     describe "dates" do
